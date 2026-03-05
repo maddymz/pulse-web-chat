@@ -34,7 +34,7 @@ if os.path.isdir(_DIST_DIR):
     app.mount("/assets", StaticFiles(directory=os.path.join(_DIST_DIR, "assets")), name="assets")
 
     @app.get("/{full_path:path}")
-    async def serve_spa(_full_path: str) -> FileResponse:
+    async def serve_spa(full_path: str) -> FileResponse:
         return FileResponse(os.path.join(_DIST_DIR, "index.html"))
 
 # ── ASGI app: Socket.IO wraps FastAPI ────────────────────────────────────────

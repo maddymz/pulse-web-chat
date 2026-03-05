@@ -12,8 +12,8 @@ WORKDIR /app
 
 # Install Python dependencies
 COPY server/pyproject.toml ./
-RUN pip install --no-cache-dir \
-    fastapi>=0.111.0 \
+RUN pip install --no-cache-dir --root-user-action=ignore \
+    "fastapi>=0.111.0" \
     "python-socketio>=5.11.3" \
     "uvicorn[standard]>=0.30.1" \
     "pydantic>=2.7.3" \
