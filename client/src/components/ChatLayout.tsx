@@ -13,7 +13,13 @@ export function ChatLayout() {
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen)
 
   return (
-    <div className="flex overflow-hidden" style={{ height: 'var(--app-height, 100dvh)' }}>
+    <div
+      className="flex overflow-hidden fixed w-full left-0"
+      style={{
+        height: 'var(--app-height, 100dvh)',
+        top: 'var(--app-top, 0px)',
+      }}
+    >
       {/* Mobile backdrop — tap outside sidebar to close it */}
       {sidebarOpen && (
         <div

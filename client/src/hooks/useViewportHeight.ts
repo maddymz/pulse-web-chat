@@ -1,23 +1,29 @@
 import { useEffect } from 'react'
 
 /**
- * Tracks the visual viewport height (accounts for iOS Safari virtual keyboard)
- * and writes it to the --vh CSS custom property on <html>.
- * Use `height: calc(var(--vh) * 100)` or `height: var(--app-height)` in CSS,
- * or the `app-height` class (set via inline style in ChatLayout).
+ * Tracks the visual viewport dimensions and writes them to CSS custom properties.
+ * --app-height: actual visible height (shrinks when iOS keyboard appears)
+ * --app-top: vertical offset when iOS scrolls the page to show the keyboard
+ *
+ * ChatLayout uses position:fixed + these two vars so it always occupies
+ * exactly the visible area, regardless of keyboard state.
  */
 export function useViewportHeight() {
   useEffect(() => {
     const update = () => {
-      const h = window.visualViewport?.height ?? window.innerHeight
-      document.documentElement.style.setProperty('--app-height', `${h}px`)
+      const vv = window.visualViewport
+      const height = vv?.height ?? window.innerHeight
+      const offsetTop = vv?.offsetTop ?? 0
+      document.documentElement.style.setProperty('--app-height', `${height}px`)
+      document.documentElement.style.setProperty('--app-top', `${offsetTop}px`)
     }
     update()
+    // iOS fires 'scroll' on visualViewport (not 'resize') when keyboard changes
     window.visualViewport?.addEventListener('resize', update)
-    window.addEventListener('resize', update)
+    window.visualViewport?.addEventListener('scroll', update)
     return () => {
       window.visualViewport?.removeEventListener('resize', update)
-      window.removeEventListener('resize', update)
+      window.visualViewport?.removeEventListener('scroll', update)
     }
   }, [])
 }
