@@ -45,7 +45,7 @@ export function MessageInput({ roomId }: Props) {
   }
 
   return (
-    <div className="px-3 md:px-6 py-3 md:py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+    <div className="px-3 md:px-6 pt-3 md:pt-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
       <div className="flex items-end gap-3 bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-2 border border-gray-200 dark:border-gray-700 focus-within:border-violet-400 dark:focus-within:border-violet-600 transition-colors">
         <textarea
           value={text}
