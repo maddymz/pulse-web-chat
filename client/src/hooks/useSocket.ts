@@ -3,6 +3,26 @@ import socket from '../lib/socket'
 import { SocketEvents } from '../types/events'
 import { useChatStore } from '../store/useChatStore'
 import { useAuthStore } from '../store/useAuthStore'
+
+function playPing() {
+  try {
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(880, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.25, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4)
+    osc.start(ctx.currentTime)
+    osc.stop(ctx.currentTime + 0.4)
+    osc.onended = () => ctx.close()
+  } catch {
+    // AudioContext blocked (e.g. no user interaction yet) — fail silently
+  }
+}
 import type {
   RoomJoinedPayload,
   NewMessagePayload,
@@ -49,6 +69,8 @@ export function useSocket() {
 
     socket.on(SocketEvents.NEW_MESSAGE, ({ message }: NewMessagePayload) => {
       addMessage(message)
+      const currentUserId = useAuthStore.getState().user?.id
+      if (message.senderId !== currentUserId) playPing()
     })
 
     socket.on(SocketEvents.USER_JOINED, ({ user }: UserJoinedPayload) => {
