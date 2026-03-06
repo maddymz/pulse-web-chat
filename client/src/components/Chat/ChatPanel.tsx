@@ -1,4 +1,5 @@
 import { useChatStore } from '../../store/useChatStore'
+import { useUIStore } from '../../store/useUIStore'
 import { ChatHeader } from './ChatHeader'
 import { MessageList } from './MessageList'
 import { TypingIndicator } from './TypingIndicator'
@@ -6,6 +7,7 @@ import { MessageInput } from './MessageInput'
 
 export function ChatPanel() {
   const activeRoomId = useChatStore((s) => s.activeRoomId)
+  const setSidebarOpen = useUIStore((s) => s.setSidebarOpen)
 
   if (!activeRoomId) {
     return (
@@ -13,7 +15,13 @@ export function ChatPanel() {
         <div className="text-center select-none">
           <div className="text-5xl mb-3">💬</div>
           <p className="text-lg font-medium">Select a room to start chatting</p>
-          <p className="text-sm mt-1">Or create a new one with the + button</p>
+          <p className="text-sm mt-1 hidden md:block">Or create a new one with the + button</p>
+          <button
+            className="md:hidden mt-4 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl transition-colors"
+            onClick={() => setSidebarOpen(true)}
+          >
+            Browse Rooms
+          </button>
         </div>
       </div>
     )

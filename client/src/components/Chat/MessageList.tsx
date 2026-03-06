@@ -25,7 +25,7 @@ export function MessageList({ roomId }: Props) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-1">
+    <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-1">
       {messages.map((message, index) => {
         const prev = messages[index - 1]
         const showAvatar = !prev || prev.senderId !== message.senderId

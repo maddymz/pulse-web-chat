@@ -1,4 +1,5 @@
 import { useChatStore } from '../../store/useChatStore'
+import { useUIStore } from '../../store/useUIStore'
 import socket from '../../lib/socket'
 import { SocketEvents } from '../../types/events'
 import type { Room } from '../../types'
@@ -9,6 +10,7 @@ interface Props {
 
 export function RoomItem({ room }: Props) {
   const { activeRoomId, setActiveRoom, unreadCounts } = useChatStore()
+  const setSidebarOpen = useUIStore((s) => s.setSidebarOpen)
   const isActive = activeRoomId === room.id
   const unread = unreadCounts[room.id] ?? 0
 
@@ -17,6 +19,7 @@ export function RoomItem({ room }: Props) {
       socket.emit(SocketEvents.JOIN_ROOM, { roomId: room.id })
       setActiveRoom(room.id)
     }
+    setSidebarOpen(false)
   }
 
   return (

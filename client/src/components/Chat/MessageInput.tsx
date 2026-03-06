@@ -45,7 +45,7 @@ export function MessageInput({ roomId }: Props) {
   }
 
   return (
-    <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+    <div className="px-3 md:px-6 py-3 md:py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
       <div className="flex items-end gap-3 bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-2 border border-gray-200 dark:border-gray-700 focus-within:border-violet-400 dark:focus-within:border-violet-600 transition-colors">
         <textarea
           value={text}
@@ -59,7 +59,7 @@ export function MessageInput({ roomId }: Props) {
         <button
           onClick={sendMessage}
           disabled={!text.trim()}
-          className="mb-0.5 p-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-40 text-white transition-colors"
+          className="mb-0.5 p-2.5 md:p-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-40 text-white transition-colors"
           title="Send (Enter)"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -67,7 +67,7 @@ export function MessageInput({ roomId }: Props) {
           </svg>
         </button>
       </div>
-      <p className="text-xs text-gray-400 dark:text-gray-600 mt-1.5 text-right">
+      <p className="hidden md:block text-xs text-gray-400 dark:text-gray-600 mt-1.5 text-right">
         Enter to send · Shift+Enter for newline
       </p>
     </div>
