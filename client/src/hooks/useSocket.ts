@@ -4,9 +4,31 @@ import { SocketEvents } from '../types/events'
 import { useChatStore } from '../store/useChatStore'
 import { useAuthStore } from '../store/useAuthStore'
 
+// Shared AudioContext — created once, resumed on first user gesture so that
+// mobile browsers (iOS Safari, Android Chrome) honour the autoplay policy.
+let audioCtx: AudioContext | null = null
+
+function getAudioContext(): AudioContext | null {
+  try {
+    if (!audioCtx) audioCtx = new AudioContext()
+    // resume() is a no-op when already running; on mobile it needs a gesture
+    // to move from 'suspended' → 'running', so we call it on every interaction.
+    if (audioCtx.state === 'suspended') audioCtx.resume()
+    return audioCtx
+  } catch {
+    return null
+  }
+}
+
+// Unlock the AudioContext on the first user interaction so mobile can play.
+const unlockAudio = () => { getAudioContext(); document.removeEventListener('click', unlockAudio); document.removeEventListener('touchend', unlockAudio) }
+document.addEventListener('click', unlockAudio, { once: true })
+document.addEventListener('touchend', unlockAudio, { once: true })
+
 function playPing() {
   try {
-    const ctx = new AudioContext()
+    const ctx = getAudioContext()
+    if (!ctx || ctx.state !== 'running') return
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.connect(gain)
@@ -18,9 +40,8 @@ function playPing() {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4)
     osc.start(ctx.currentTime)
     osc.stop(ctx.currentTime + 0.4)
-    osc.onended = () => ctx.close()
   } catch {
-    // AudioContext blocked (e.g. no user interaction yet) — fail silently
+    // fail silently
   }
 }
 import type {
