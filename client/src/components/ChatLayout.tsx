@@ -1,4 +1,5 @@
 import { useSocket } from '../hooks/useSocket'
+import { useViewportHeight } from '../hooks/useViewportHeight'
 import { Sidebar } from './Sidebar/Sidebar'
 import { ChatPanel } from './Chat/ChatPanel'
 import { CreateRoomModal } from './UI/CreateRoomModal'
@@ -6,12 +7,13 @@ import { useUIStore } from '../store/useUIStore'
 
 export function ChatLayout() {
   useSocket()
+  useViewportHeight()
   const createRoomModalOpen = useUIStore((s) => s.createRoomModalOpen)
   const sidebarOpen = useUIStore((s) => s.sidebarOpen)
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen)
 
   return (
-    <div className="flex h-dvh overflow-hidden">
+    <div className="flex overflow-hidden" style={{ height: 'var(--app-height, 100dvh)' }}>
       {/* Mobile backdrop — tap outside sidebar to close it */}
       {sidebarOpen && (
         <div
