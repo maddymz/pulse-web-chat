@@ -47,6 +47,7 @@ export const useChatStore = create<ChatState>((set) => ({
   addMessage: (message) =>
     set((s) => {
       const existing = s.messages[message.roomId] ?? []
+      if (existing.some((m) => m.id === message.id)) return s // deduplicate
       const isActive = s.activeRoomId === message.roomId
       return {
         messages: { ...s.messages, [message.roomId]: [...existing, message] },

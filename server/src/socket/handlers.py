@@ -132,7 +132,13 @@ def register_handlers(sio: socketio.AsyncServer) -> None:
         )
         room_store.add_message(room_id, message)
 
-        await sio.emit(SocketEvents.NEW_MESSAGE, {"message": message.to_dict()}, room=room_id)
+        # Send directly to each member instead of using Socket.IO room broadcast.
+        # Room broadcasts via room= can silently miss clients whose socket session
+        # is out of sync; to=sid direct delivery is always reliable.
+        msg_data = {"message": message.to_dict()}
+        room = room_store.rooms[room_id]
+        for member_sid in list(room.member_ids):
+            await sio.emit(SocketEvents.NEW_MESSAGE, msg_data, to=member_sid)
 
     @sio.on(SocketEvents.TYPING)
     async def handle_typing(sid: str, data: dict) -> None:
